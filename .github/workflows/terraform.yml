@@ -20,13 +20,28 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
-      working-directory: ./terraform  # Update this path if necessary
+      working-directory: ./path/to/terraform/configuration
 
     - name: Apply Terraform configuration
+      id: apply
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ap-south-1
         AWS_REGION: ap-south-1
       run: terraform apply -auto-approve
-      working-directory: ./terraform  # Update this path if necessary
+      working-directory: ./path/to/terraform/configuration
+
+    - name: Output Private Key
+      id: private_key
+      run: echo "${{ steps.apply.outputs.private_key_pem }}" > private_key.pem
+      working-directory: ./path/to/terraform/configuration
+      env:
+        PRIVATE_KEY_PEM: ${{ secrets.PRIVATE_KEY_PEM }}
+      if: success()
+
+    - name: Save Private Key
+      uses: actions/upload-artifact@v2
+      with:
+        name: private-key
+        path: ./path/to/terraform/configuration/private_key.pem
