@@ -20,17 +20,16 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
-      working-directory: ./path/to/terraform/configuration
+      working-directory: ./terraform  # Update this path if necessary
 
     - name: Apply Terraform configuration
-      id: apply
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ap-south-1
         AWS_REGION: ap-south-1
       run: terraform apply -auto-approve
-      working-directory: ./path/to/terraform/configuration
+      working-directory: ./terraform  # Update this path if necessary
 
     - name: Output Private Key
       id: private_key
