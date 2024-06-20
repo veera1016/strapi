@@ -32,13 +32,6 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: ./terraform  # Update this path if necessary
 
-    - name: Move Generated File
-      run: |
-        mkdir -p terraform
-        mv ./path/to/generated/file ./terraform/generated_file_name
-        # Replace "./path/to/generated/file" with the actual path of the generated file
-        # Replace "generated_file_name" with the name you want to give the moved file
-
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
