@@ -28,18 +28,20 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ap-south-1
         AWS_REGION: ap-south-1
+        TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}  # Optional: Passing secret key as Terraform variable
       run: terraform apply -auto-approve
       working-directory: ./terraform  # Update this path if necessary
 
-    - name: Output Private Key
-      id: private_key
-      run: echo "${{ steps.apply.outputs.private_key_pem }}" > ./path/to/file/terraform
-      env:
-        PRIVATE_KEY_PEM: ${{ secrets.PRIVATE_KEY_PEM }}
-      if: success()
+    - name: Move Generated File
+      run: |
+        mkdir -p terraform
+        mv path/to/generated/file terraform/generated_file_name
+        # Replace "path/to/generated/file" with the actual path of the generated file
+        # Replace "generated_file_name" with the name you want to give the moved file
 
-    - name: Save Private Key as Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: private-key  # Name of the artifact
-        path: ./path/to/file/terraform
+        name: terraform-output
+        path: terraform/generated_file_name
+        # Ensure the artifact path matches the path where the file is moved
