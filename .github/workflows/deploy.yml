@@ -1,0 +1,29 @@
+name: 'Code Workflow'
+
+on:
+  push:
+    branches:
+      - saipavan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy Strapi
+        env:
+          EC2_USER: ubuntu
+          ASHOK_EC2_HOST: ${{ secrets.ASHOK_EC2_HOST }}
+          ASHOK_EC2_KEY: ${{ secrets.ASHOK_EC2_KEY }}
+        run: |
+          echo "${ASHOK_EC2_KEY}" > key.pem
+          chmod 600 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$ASHOK_EC2_HOST "
+            cd /srv/strapi
+            git pull origin MASTER
+            npm install
+            pm2 restart strapi
+          "
