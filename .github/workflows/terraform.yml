@@ -33,14 +33,13 @@ jobs:
 
     - name: Output Private Key
       id: private_key
-      run: echo "${{ steps.apply.outputs.private_key_pem }}" > private_key.pem
-      working-directory: ./path/to/terraform/configuration
+      run: echo "${{ steps.apply.outputs.private_key_pem }}" > ./terraform
       env:
         PRIVATE_KEY_PEM: ${{ secrets.PRIVATE_KEY_PEM }}
       if: success()
 
-    - name: Save Private Key
+    - name: Save Private Key as Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: private-key
-        path: ./path/to/terraform/configuration/private_key.pem
+        name: private-key  # Name of the artifact
+        path: ./terraform
