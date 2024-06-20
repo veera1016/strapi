@@ -10,31 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_wrapper: false
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
-    - name: Initialize Terraform
-      run: terraform init
-      working-directory: ./terraform  # Update this path if necessary
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform  # Update this path if necessary
 
-    - name: Apply Terraform configuration
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ap-south-1
-        AWS_REGION: ap-south-1
-        TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}  # Optional: Passing secret key as Terraform variable
-      run: terraform apply -auto-approve
-      working-directory: ./terraform  # Update this path if necessary
+      - name: Apply Terraform configuration
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-south-1
+          AWS_REGION: ap-south-1
+          TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}  # Optional: Passing secret key as Terraform variable
+        run: terraform apply -auto-approve
+        working-directory: ./terraform  # Update this path if necessary
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: terraform-output
-        path: ./terraform/generated_file_name
-        # Ensure the artifact path matches the path where the file is moved
+      - name: Generate or Move File
+        run: |
+          touch generated_file_name
+          echo "Generated content" > ./terraform/generated_file_name
+        working-directory: ./terraform  # Update path if necessary
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: terraform-output
+          path: ./terraform/generated_file_name
