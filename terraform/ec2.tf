@@ -41,7 +41,6 @@ resource "aws_instance" "strapi_instance" {
       host        = self.public_ip
     }
   }
-}
 
 resource "aws_security_group" "strapi_sg" {
   name        = "strapi-security-group-${random_id.this.hex}"
