@@ -12,18 +12,13 @@ resource "aws_instance" "strapi" {
     Name = "StrapiServer"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update -y",
-      "sudo apt-get install -y curl",
-      "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
-      "sudo apt-get install -y nodejs",
-      "sudo npm install -g pm2",
-      "git clone https://github.com/veera1016/strapi.git /srv/strapi",
-      "cd /srv/strapi && npm install",
-      "cd /srv/strapi && npm run build",
-      "pm2 start npm --name strapi -- start"
-    ]
+  user_data = <<-EOF
+    #!/bin/bash
+    sudo apt update
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt install -y nodejs
+    sudo npm install -g yarn pm2
+  EOF
 
     connection {
       type        = "ssh"
