@@ -12,36 +12,6 @@ resource "aws_key_pair" "strapi_keypair" {
   public_key = tls_private_key.strapi_key.public_key_openssh
 }
 
-resource "aws_instance" "strapi_instance" {
-  ami           = var.ami
-  instance_type = "t2.medium"
-  key_name      = aws_key_pair.strapi_keypair.key_name
-  security_groups = [aws_security_group.strapi_sg.name]
-  tags = {
-    Name = "StrapiInstance-${random_id.this.hex}"
-  }
-
-  user_data = <<-EOF
-            #!/bin/bash
-            sudo apt-get update -y
-            sudo apt-get install -y git
-            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-            sudo npm install -g pm2
-            git clone https://github.com/PearlThoughts-DevOps-Internship/strapi /srv/strapi
-            cd /srv/strapi
-            sudo npm install
-            pm2 start npm --name "strapi" -- start
-            EOF
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = tls_private_key.strapi_key.private_key_pem
-      host        = self.public_ip
-    }
-  }
-
 resource "aws_security_group" "strapi_sg" {
   name        = "strapi-security-group-${random_id.this.hex}"
   description = "Security group for Strapi EC2 instance"
@@ -69,6 +39,37 @@ resource "aws_security_group" "strapi_sg" {
 
   tags = {
     Name = "Strapi Security Group-${random_id.this.hex}"
+  }
+}
+
+resource "aws_instance" "strapi_instance" {
+  ami           = var.ami
+  instance_type = "t2.medium"
+  key_name      = aws_key_pair.strapi_keypair.key_name
+  vpc_security_group_ids = [aws_security_group.strapi_sg.id]
+
+  tags = {
+    Name = "StrapiInstance-${random_id.this.hex}"
+  }
+
+  user_data = <<-EOF
+            #!/bin/bash
+            sudo apt-get update -y
+            sudo apt-get install -y git
+            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            sudo npm install -g pm2
+            git clone https://github.com/PearlThoughts-DevOps-Internship/strapi /srv/strapi
+            cd /srv/strapi
+            sudo npm install
+            pm2 start npm --name "strapi" -- start
+            EOF
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = tls_private_key.strapi_key.private_key_pem
+    host        = self.public_ip
   }
 }
 
