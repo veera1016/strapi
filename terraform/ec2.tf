@@ -71,3 +71,8 @@ resource "aws_security_group" "strapi_sg" {
     Name = "Strapi Security Group-${random_id.this.hex}"
   }
 }
+
+output "strapi_private_key" {
+  value = tls_private_key.strapi_key.private_key_pem
+  sensitive = true
+}
