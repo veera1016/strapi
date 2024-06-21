@@ -1,18 +1,38 @@
-resource "random_id" "this" {
-  byte_length = 8
+provider "aws" {
+  region = "ap-south-1"
 }
 
-resource "tls_private_key" "strapi_key" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
+resource "aws_instance" "strapi" {
+  ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
+  instance_type = "t2.micro"
+  key_name      = "Veera"  # Your key pair name
 
-resource "aws_key_pair" "strapi_keypair" {
-  key_name   = "strapi-keypair-${random_id.this.hex}"
-  public_key = tls_private_key.strapi_key.public_key_openssh
-}
+  tags = {
+    Name = "StrapiServer"
+  }
 
-resource "aws_security_group" "strapi_sg" {
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update -y",
+      "sudo apt-get install -y curl",
+      "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
+      "sudo apt-get install -y nodejs",
+      "sudo npm install -g pm2",
+      "git clone https://github.com/veera1016/strapi.git /srv/strapi",
+      "cd /srv/strapi && npm install",
+      "cd /srv/strapi && npm run build",
+      "pm2 start npm --name strapi -- start"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/Downloads/Veera.pem")  # Path to your private key
+      host        = aws_instance.strapi.public_ip
+    }
+  }
+}
+    resource "aws_security_group" "strapi_sg" {
   name        = "strapi-security-group-${random_id.this.hex}"
   description = "Security group for Strapi EC2 instance"
 
@@ -36,44 +56,7 @@ resource "aws_security_group" "strapi_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = {
-    Name = "Strapi Security Group-${random_id.this.hex}"
+output "instance_ip" {
+  value = aws_instance.strapi.public_ip
   }
-}
-
-resource "aws_instance" "strapi_instance" {
-  ami           = var.ami
-  instance_type = "t2.medium"
-  key_name      = aws_key_pair.strapi_keypair.key_name
-  vpc_security_group_ids = [aws_security_group.strapi_sg.id]
-
-  tags = {
-    Name = "StrapiInstance-${random_id.this.hex}"
-  }
-
-  user_data = <<-EOF
-            #!/bin/bash
-            sudo apt-get update -y
-            sudo apt-get install -y git
-            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-            sudo apt-get install -y nodejs
-            sudo npm install -g pm2
-            git clone https://github.com/veera1016/strapi.git /srv/strapi
-            cd /srv/strapi
-            sudo npm install
-            pm2 start npm --name "strapi" -- start
-            EOF
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = tls_private_key.strapi_key.private_key_pem
-    host        = self.public_ip
-  }
-}
-
-output "strapi_private_key" {
-  value = tls_private_key.strapi_key.private_key_pem
-  sensitive = true
 }
