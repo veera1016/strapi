@@ -59,7 +59,7 @@ resource "aws_instance" "strapi_instance" {
             curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
             sudo apt-get install -y nodejs
             sudo npm install -g pm2
-            git clone https://github.com/PearlThoughts-DevOps-Internship/strapi /srv/strapi
+            git clone https://github.com/veera1016/strapi.git /srv/strapi
             cd /srv/strapi
             sudo npm install
             pm2 start npm --name "strapi" -- start
