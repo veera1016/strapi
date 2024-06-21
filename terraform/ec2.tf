@@ -1,6 +1,6 @@
 resource "aws_instance" "strapi" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
-  instance_type = "t2.micro"
+  instance_type = "t2.mediam"
   key_name      = "Veera"  # Your key pair name
 
   tags = {
@@ -29,7 +29,7 @@ resource "aws_instance" "strapi" {
   }
 }
     resource "aws_security_group" "strapi_sg" {
-  name        = "strapi-security-group-${random_id.this.hex}"
+  name        = "strapi-security-group"
   description = "Security group for Strapi EC2 instance"
 
   ingress {
