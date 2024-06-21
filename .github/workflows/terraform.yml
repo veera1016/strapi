@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-     
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -24,10 +24,9 @@ jobs:
 
       - name: Apply Terraform configuration
         env:
-          aws-access-key-id:: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-          
+          AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
         run: terraform apply -auto-approve
         working-directory: ./terraform  # Update this path if necessary
 
@@ -38,3 +37,4 @@ jobs:
 
       - name: Save SSH Private Key
         run: echo "${{ steps.private_key.outputs.private_key }}" > private_key.pem
+        working-directory: ./terraform  # Ensure this matches your Terraform configuration path
