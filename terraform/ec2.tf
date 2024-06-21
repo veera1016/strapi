@@ -1,3 +1,12 @@
+variable "private_key_path" {
+  description = "Path to the private key file"
+  type        = string
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
 resource "aws_instance" "strapi" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
   instance_type = "t2.medium"
@@ -24,7 +33,7 @@ resource "aws_instance" "strapi" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file("~/.ssh/Veera.pem")  # Path to your private key
+      private_key = file(var.private_key_path)
       host        = self.public_ip
     }
   }
@@ -55,3 +64,4 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
