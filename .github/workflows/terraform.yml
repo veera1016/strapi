@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -18,23 +18,16 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+          
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./terraform  # Update this path if necessary
 
-      - name: Apply Terraform configuration
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
+      - name: Apply Terraform
         run: terraform apply -auto-approve
-        working-directory: ./terraform  # Update this path if necessary
-
-      - name: Get SSH Private Key
-        id: private_key
-        run: echo "::set-output name=private_key::$(terraform output -raw strapi_private_key)"
-        working-directory: ./terraform  # Ensure this matches your Terraform configuration path
-
-      - name: Save SSH Private Key
-        run: echo "${{ steps.private_key.outputs.private_key }}" > private_key.pem
-        working-directory: ./terraform  # Ensure this matches your Terraform configuration path
+        
