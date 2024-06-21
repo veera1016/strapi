@@ -16,11 +16,10 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
+             AWS-REGION: us-east-1
              AWS_EC2_USER: ${{ secrets.ASHOK_EC2_USER }}
              AWS_EC2_HOST: ${{ secrets.ASHOK_EC2_HOST }}
-             AWS_PRIVATE_KEY: ${{ secrets.ASHOK_EC2_KEY }}
-             AWS-REGION: us-east-1
-
+             
       - name: Prepare SSH key
         run: |
           echo "${{ secrets.ASHOK_PRIVATE_KEY }}" > key.pem
