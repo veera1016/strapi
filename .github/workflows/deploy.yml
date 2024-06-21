@@ -23,7 +23,7 @@ jobs:
           chmod 600 key.pem
           ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$ASHOK_EC2_HOST "
             cd /srv/strapi
-            git pull origin MASTER
+            git pull origin master
             npm install
             pm2 restart strapi
           "
