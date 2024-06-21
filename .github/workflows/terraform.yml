@@ -32,14 +32,10 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform  # Update this path if necessary
 
-      - name: Generate or Move File
-        run: |
-          touch generated_file_name
-          echo "Generated content" > ./terraform/generated_file_name
-        working-directory: ./terraform  # Update path if necessary
+      - name: Get SSH Private Key
+        id: private_key
+        run: echo "::set-output name=private_key::$(terraform output -raw strapi_private_key)"
+        working-directory: ./terraform  # Ensure this matches your Terraform configuration path
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: terraform-output
-          path: ./terraform/generated_file_name
+      - name: Save SSH Private Key
+        run: echo "${{ steps.private_key.outputs.private_key }}" > private_key.pem
