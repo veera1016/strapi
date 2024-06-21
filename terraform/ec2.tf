@@ -1,7 +1,8 @@
 resource "aws_instance" "strapi" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
-  instance_type = "t2.mediam"
+  instance_type = "t2.medium"
   key_name      = "Veera"  # Your key pair name
+  security_groups = [aws_security_group.strapi_sg.name]
 
   tags = {
     Name = "StrapiServer"
@@ -23,12 +24,13 @@ resource "aws_instance" "strapi" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file("~/Downloads/Veera.pem")  # Path to your private key
-      host        = aws_instance.strapi.public_ip
+      private_key = file("~/.ssh/Veera.pem")  # Path to your private key
+      host        = self.public_ip
     }
   }
 }
-    resource "aws_security_group" "strapi_sg" {
+
+resource "aws_security_group" "strapi_sg" {
   name        = "strapi-security-group"
   description = "Security group for Strapi EC2 instance"
 
@@ -52,7 +54,8 @@ resource "aws_instance" "strapi" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
 output "instance_ip" {
   value = aws_instance.strapi.public_ip
-  }
 }
