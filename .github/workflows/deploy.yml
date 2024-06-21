@@ -15,7 +15,7 @@ jobs:
 
       - name: Deploy Strapi
         env:
-          EC2_USER: ubuntu
+          ASHOK_EC2_USER: ${{ secrets.ASHOK_EC2_USER }}
           ASHOK_EC2_HOST: ${{ secrets.ASHOK_EC2_HOST }}
           ASHOK_EC2_KEY: ${{ secrets.ASHOK_EC2_KEY }}
           
