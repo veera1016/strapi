@@ -3,6 +3,10 @@ variable "private_key_path" {
   type        = string
 }
 
+provider "aws" {
+  region = "ap-south-1"
+}
+
 resource "aws_instance" "strapi" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
   instance_type = "t2.medium"
@@ -61,3 +65,6 @@ resource "aws_security_group" "strapi_sg" {
   }
 }
 
+output "instance_ip" {
+  value = aws_instance.strapi.public_ip
+}
