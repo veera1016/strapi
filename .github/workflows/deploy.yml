@@ -1,31 +1,41 @@
-name: Deploy to EC2
+name: Deploy Strapi
 
 on:
   push:
     branches:
-      - master
+      - main  # Trigger this workflow on push to the main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      ASHOK_EC2_USER: ${{ secrets.ASHOK_EC2_USER }}
+      ASHOK_EC2_HOST: ${{ secrets.ASHOK_EC2_HOST }}
+      ASHOK_PRIVATE_KEY: ${{ secrets.ASHOK_PRIVATE_KEY }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up SSH key
-      run: |
-        echo "${{ secrets.ASHOK_EC2_KEY }}" > key.pem
-        chmod 600 key.pem
+      - name: Prepare SSH key
+        run: |
+          echo "${{ secrets.ASHOK_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
 
-    - name: Deploy to EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.ASHOK_EC2_USER }}@${{ secrets.ASHOK_EC2_HOST }} "
-          cd /srv/strapi
-          git pull origin master
-          npm install
-          pm2 restart strapi
-        "
-      env:
-        ASHOK_EC2_USER: ${{ secrets.ASHOK_EC2_USER }}
-        ASHOK_EC2_HOST: ${{ secrets.ASHOK_EC2_HOST }}
+      - name: Deploy Strapi Application
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$ASHOK_EC2_HOST "
+            sudo mkdir -p /srv/strapi && sudo chown ubuntu:ubuntu /srv/strapi
+            cd /srv/strapi
+            if [ -d '.git' ]; then
+              git pull origin master
+            else
+              git clone https://github.com/PearlThoughts-DevOps-Internship/strapi.git /srv/strapi
+            fi
+            npm install
+            npm run build
+            pm2 restart strapi || pm2 start npm --name 'strapi' -- run start
+          "
+      - name: Clean up
+        run: rm key.pem
