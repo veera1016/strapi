@@ -25,7 +25,7 @@ jobs:
 
       - name: Deploy Strapi Application
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem $ASHOK_EC2_USER@$ASHOK_EC2_HOST "
+          ssh -o StrictHostKeyChecking=no -i strapi-keypair-0df0d321ca4d2847 $ASHOK_EC2_USER@$ASHOK_EC2_HOST "
             sudo mkdir -p /srv/strapi && sudo chown ubuntu:ubuntu /srv/strapi
             cd /srv/strapi
             if [ -d '.git' ]; then
