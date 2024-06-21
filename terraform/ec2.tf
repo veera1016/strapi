@@ -32,7 +32,10 @@ resource "aws_instance" "strapi" {
       host        = self.public_ip
     }
   }
-}
+} 
+  resource "aws_security_group" "strapi_sg" {
+  name        = "ashok-security-group"
+  description = "Security group for Strapi EC2 instance"
 
   ingress {
     from_port   = 22
