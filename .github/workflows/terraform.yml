@@ -3,7 +3,7 @@ name: Terraform Apply
 on:
   push:
     branches:
-      - main
+      - master
       
 jobs:
   terraform:
@@ -24,8 +24,8 @@ jobs:
 
       - name: Apply Terraform configuration
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
+          ASHOK_AWS_ACCESS_KEY_ID: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
+          ASHOK_AWS_SECRET_ACCESS_KEY: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-south-1
           AWS_REGION: ap-south-1
           TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}  # Optional: Passing secret key as Terraform variable
