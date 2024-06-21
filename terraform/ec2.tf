@@ -5,7 +5,7 @@ variable "private_key_path" {
 
 resource "aws_instance" "strapi" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Correct AMI ID for ap-south-1
-  instance_type = "t2.medium"
+  instance_type = "t2.small"
   key_name      = "Veera"  # Your key pair name
 
   tags = {
