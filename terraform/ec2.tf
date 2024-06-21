@@ -55,7 +55,3 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-output "instance_ip" {
-  value = aws_instance.strapi.public_ip
-}
