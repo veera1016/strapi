@@ -20,7 +20,8 @@ jobs:
 
       - name: Create SSH Key File
         run: |
-          echo "${{ secrets.ASHOK_EC2_KEY }}" > /home/runner/.ssh/Veera.pem
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.AWS_SSH_KEY }}" > /home/runner/.ssh/Veera.pem
           chmod 600 /home/runner/.ssh/Veera.pem
 
       - name: Initialize Terraform
