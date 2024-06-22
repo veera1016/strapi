@@ -30,12 +30,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             set -e
 
-            # Remove existing contents of 'strapi' directory
-            rm -rf strapi/*
-
-            # Clone the repository into 'strapi' directory
-            git clone https://github.com/veera1016/strapi.git strapi
-
             cd strapi
 
             # Install Strapi globally
