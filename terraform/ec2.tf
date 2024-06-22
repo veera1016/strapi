@@ -46,7 +46,7 @@ resource "aws_instance" "strapi" {
       "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
       "sudo npm install -g pm2",
-      "git clone -b revert-1-master https://github.com/veera1016/strapi.git /home/ubuntu/strapi",  # Cloning into the home directory
+      "git clone https://github.com/veera1016/strapi.git /home/ubuntu/strapi",  # Cloning the default branch
       "cd /home/ubuntu/strapi && npm install",
       "cd /home/ubuntu/strapi && npm run build",
       "pm2 start npm --name strapi -- start"
