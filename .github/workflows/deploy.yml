@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master  # Trigger this workflow on push to the main branch
-      
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,11 +27,11 @@ jobs:
 
       - name: Deploy Strapi Application
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} "
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             cd ~/my-strapi-project
             git fetch origin master
             git reset --hard origin/master 
             yarn install 
             yarn build 
             pm2 restart strapi-app 
-          '
+          EOF
