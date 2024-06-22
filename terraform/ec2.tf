@@ -41,11 +41,16 @@ resource "aws_instance" "strapi" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update -y",
-      "sudo apt-get install -y curl git",
-      "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
+      "sudo apt-get update",
+      "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
-      "sudo npm install -g pm2",
+      "sudo apt-get install -y npm",
+      "sudo npm install pm2 -g",
+      "if [ ! -d /srv/strapi ]; then sudo https://github.com/veera1016/strapi.git /srv/strapi; else cd /srv/strapi && sudo git pull origin main; fi",
+      "sudo chmod u+x /srv/strapi/generate_env_variables.sh",
+      "cd /srv/strapi",
+      "sudo ./generate_env_variables.sh",
+      "sudo pm2 start npm --name 'strapi' -- start"
     ]
 
     connection {
