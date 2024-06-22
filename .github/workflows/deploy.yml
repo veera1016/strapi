@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -38,17 +38,13 @@ jobs:
             sudo apt update
             sudo apt upgrade -y
 
-            # Install required dependencies for Node.js and npm
-            sudo apt install -y curl gnupg2 lsb-release
-            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            # Install Node.js 14.x
+            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
             sudo apt install -y nodejs
 
-            # Install npm (npm will be installed automatically with Node.js)
-            # Optional: Upgrade npm to the latest version
-            sudo npm install -g npm@latest
-
-            # Clean npm cache
-            npm cache clean --force
+            # Verify Node.js and npm versions
+            node --version
+            npm --version
 
             # Check if the 'strapi' directory exists
             if [ -d "strapi" ]; then
@@ -61,15 +57,16 @@ jobs:
               cd strapi
             fi
 
-            # Create a new Strapi project
-            strapi new strapi-project --dbclient=sqlite
+            # Create a new Strapi project with Node.js 14.x
+            npm install -g strapi
+            strapi new strapi-project --dbclient=sqlite --node v14
 
             # Navigate to the new project directory
             cd strapi-project
 
-            # Install dependencies with sudo
-            sudo npm install --unsafe-perm=true --allow-root
-            sudo yarn install --ignore-engines  # Use --ignore-engines to bypass npm version check
+            # Install dependencies
+            npm install
+            yarn install
 
             # Build the Strapi application
             yarn build
