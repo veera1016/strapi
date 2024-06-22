@@ -35,8 +35,16 @@ jobs:
             sudo apt update
             sudo npm install strapi@beta -g
 
-            # Clone the repository (replace with your repository URL)
-            git clone --branch master https://github.com/veera1016/Task1.git
+            if [ -d "Task1" ] && [ -z "$(ls -A Task1)" ]; then
+              echo "Directory 'Task1' exists and is empty."
+            else
+              echo "Directory 'Task1' does not exist or is not empty. Removing existing content."
+              rm -rf Task1
+            fi
+
+            # Clone the repository with force to overwrite existing content
+            git clone --force https://github.com/veera1016/Task1.git Task1
+            
             cd Task1
 
             # Install Strapi globally
