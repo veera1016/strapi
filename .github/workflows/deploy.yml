@@ -16,10 +16,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'  # Adjust to your desired Node.js version
+        node-version: '18'
 
     - name: Upgrade npm
-      run: npm install -g npm@latest
+      run: npm install -g npm@8.19.4
 
     - name: Clear npm cache
       run: npm cache clean --force
@@ -37,20 +37,26 @@ jobs:
           sudo apt update
           sudo apt install -y nodejs npm
 
-          # Navigate to the project directory
-          cd /path/to/your/strapi-project  # Replace with your actual path
+          # Clone the Strapi repository
+          git clone https://github.com/veera1016/strapi.git
+          cd strapi
 
-          # Pull latest changes (if any)
-          git pull origin master
+          # Install Strapi globally
+          sudo npm install -g strapi
 
-          # Install Strapi dependencies
+          # Create a new Strapi project
+          strapi new strapi-project --dbclient=sqlite
+
+          # Navigate to the new project directory
+          cd strapi-project
+
+          # Install dependencies
           npm install
-          yarn install  # Use yarn for faster dependency installation
+          yarn install  # Use yarn if preferred over npm
 
-          # Build the Strapi application (if needed)
-          npm run build
+          # Additional deployment steps (if needed)
+          yarn build  # Example command, adjust as per your project's build process
 
-          # Restart the Strapi application using pm2
-          pm2 restart strapi
-
+          # Start the Strapi application using pm2
+          pm2 start npm --name "strapi" -- start
 
