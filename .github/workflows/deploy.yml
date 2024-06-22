@@ -50,21 +50,28 @@ jobs:
             # Clean npm cache
             npm cache clean --force
 
-            # Install Strapi globally
-            sudo npm install -g strapi@beta
-
-            # Clone the Strapi repository
-            git clone https://github.com/veera1016/strapi.git
-            cd strapi
+            # Check if the 'strapi' directory exists
+            if [ -d "strapi" ]; then
+              # Directory exists, pull the latest changes
+              cd strapi
+              git pull origin master
+            else
+              # Directory doesn't exist, clone the repository
+              git clone https://github.com/veera1016/strapi.git strapi
+              cd strapi
+            fi
             
-             # Install dependencies
-             sudo npm install 
-             
+            # Install dependencies
+            npm install
+            
             # Create a new Strapi project
             strapi new strapi-project --dbclient=sqlite
 
             # Navigate to the new project directory
             cd strapi-project
 
+            # Install dependencies
+            npm install
+
             # Start the Strapi application using pm2
-            pm2 start npm --name "strapi" -- run develop
+            pm2 start npm --name "strapi" -- start
