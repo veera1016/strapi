@@ -30,25 +30,15 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             set -e
             #name: Update package lists
-             sudo apt update 
-            # Update the package list and install Node.js and npm
-            sudo apt update
-            sudo npm install strapi@beta -g
-
-            if [ -d "Task1" ] && [ -z "$(ls -A Task1)" ]; then
-              echo "Directory 'Task1' exists and is empty."
-            else
-              echo "Directory 'Task1' does not exist or is not empty. Removing existing content."
-              rm -rf Task1
-            fi
-
-            # Clone the repository with force to overwrite existing content
-            git clone --force https://github.com/veera1016/Task1.git Task1
+            sudo npm install
             
-            cd Task1
+            # Clone the repository with force to overwrite existing content
+            git clone https://github.com/veera1016/strapi.git strapi
+            
+            cd strapi
 
             # Install Strapi globally
-            sudo npm install strapi@beta -g
+            sudo npm install
 
             # Create a new Strapi project
             strapi new strapi-project --dbclient=sqlite
