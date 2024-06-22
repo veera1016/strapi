@@ -29,29 +29,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             # Create the Strapi app if it doesn't exist
-            if [ ! -d "~/my-strapi-project" ]; then
-              yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run
-            fi
+          # Create a new Strapi project
+          strapi new veera-project --dbclient=sqlite
 
-            cd ~/my-strapi-project
+          # Navigate to the new project directory
+          cd veera-project
 
-            # Initialize git if necessary and pull the latest changes
-            if [ ! -d ".git" ]; then
-              git init
-              git remote add origin https://github.com/your-repo/your-strapi-project.git
-            fi
-
-            git fetch origin master
-            git reset --hard origin/master 
-
-            # Install dependencies and build the project
-            yarn install 
-            yarn build 
-            
-            # Start the Strapi app if not running, otherwise restart it
-            if pm2 describe strapi-app > /dev/null; then
-              pm2 restart strapi-app
-            else
-              pm2 start ./server.js --name strapi-app
-            fi
+          # Start the Strapi application using pm2
+          pm2 start npm --name "strapi" -- run develop
+          
           EOF
