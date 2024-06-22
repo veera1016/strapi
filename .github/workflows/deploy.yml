@@ -35,7 +35,6 @@ jobs:
           key: ${{ secrets.ASHOK_EC2_KEY }}
           script: |
             set -e
-            "sudo apt-get update",
             yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run
             cd ~/my-strapi-project
             pm2 start npm --name strapi-app -- run develop
