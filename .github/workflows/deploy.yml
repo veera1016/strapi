@@ -27,24 +27,11 @@ jobs:
 
       - name: Deploy Strapi Application
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} "
-            sudo mkdir -p /srv/strapi && sudo chown ubuntu:ubuntu /srv/strapi
-            cd /srv/strapi
-            if [ -d '.git' ]; then
-              git pull origin master
-            else
-              git clone https://github.com/veera1016/strapi.git /srv/strapi
-            fi
-            ls -la /srv/strapi
-            if [ -f /srv/strapi/package.json ]; then
-              npm install
-              npm run build
-              pm2 restart strapi || pm2 start npm --name 'strapi' -- run start
-            else
-              echo 'Error: package.json not found in /srv/strapi'
-              exit 1
-            fi
-          "
-
-      - name: Clean up
-        run: rm key.pem
+          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@$ASHOK_EC2_HOST '
+            cd ~/my-strapi-project &&
+            git fetch origin &&  
+            git reset --hard origin/somesh && 
+            yarn install &&
+            yarn build &&
+            pm2 restart strapi-app 
+          '
