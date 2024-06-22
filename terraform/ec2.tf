@@ -31,7 +31,7 @@ resource "aws_security_group" "strapi_sg" {
 
 resource "aws_instance" "strapi" {
   ami           = "ami-04b70fa74e45c3917"  # Correct AMI ID for ap-south-1
-  instance_type = "t2.medium"               # Changed to t2.medium
+  instance_type = "t2.medium"              # Changed to t2.medium
   key_name      = "Veera"                  # Your key pair name
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
 
@@ -46,9 +46,9 @@ resource "aws_instance" "strapi" {
       "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
       "sudo npm install -g pm2",
-      "git clone -b revert-1-master https://github.com/veera1016/strapi.git /srv/strapi",
-      "cd /srv/strapi && npm install",
-      "cd /srv/strapi && npm run build",
+      "git clone -b revert-1-master https://github.com/veera1016/strapi.git /home/ubuntu/strapi",  # Cloning into the home directory
+      "cd /home/ubuntu/strapi && npm install",
+      "cd /home/ubuntu/strapi && npm run build",
       "pm2 start npm --name strapi -- start"
     ]
 
