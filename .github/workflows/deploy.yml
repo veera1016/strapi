@@ -22,12 +22,12 @@ jobs:
 
       - name: Prepare SSH key
         run: |
-          echo "${{ secrets.ASHOK_EC2_KEY }}" > Veera.pem
+          echo "${{ secrets.ASHOK_EC2_KEY }}" > key.pem
           chmod 600 key.pem
 
       - name: Deploy Strapi Application
         run: |
-          ssh -o StrictHostKeyChecking=no -i Veera.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} "
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} "
             sudo mkdir -p /srv/strapi && sudo chown ubuntu:ubuntu /srv/strapi
             cd /srv/strapi
             if [ -d '.git' ]; then
