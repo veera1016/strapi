@@ -28,10 +28,23 @@ jobs:
       - name: Deploy Strapi Application
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
-            "yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run ", #if running --skip-cloud to skip loginsuff
+            # Create the Strapi app if it doesn't exist
+            if [ ! -d "~/my-strapi-project" ]; then
+              yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run
+            fi
+
             cd ~/my-strapi-project
+
+            # Initialize git if necessary and pull the latest changes
+            if [ ! -d ".git" ]; then
+              git init
+              git remote add origin https://github.com/your-repo/your-strapi-project.git
+            fi
+
             git fetch origin master
             git reset --hard origin/master 
+
+            # Install dependencies and build the project
             yarn install 
             yarn build 
             
@@ -39,6 +52,6 @@ jobs:
             if pm2 describe strapi-app > /dev/null; then
               pm2 restart strapi-app
             else
-              pm2 start your-strapi-app-file --name strapi-app
+              pm2 start ./server.js --name strapi-app
             fi
           EOF
