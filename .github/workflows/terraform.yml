@@ -24,7 +24,7 @@ jobs:
           echo "${{ secrets.ASHOK_EC2_KEY }}" > /home/runner/.ssh/Veera.pem
           chmod 600 /home/runner/.ssh/Veera.pem
           ls -al /home/runner/.ssh  # Verify permissions and existence
-
+          
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
