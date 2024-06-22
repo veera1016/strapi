@@ -30,6 +30,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             # Create the Strapi app if it doesn't exist
           # Create a new Strapi project
+          # Install Strapi globally
+          sudo npm install strapi@beta -g
+
+          # Create a new Strapi project
           strapi new veera-project --dbclient=sqlite
 
           # Navigate to the new project directory
