@@ -28,6 +28,7 @@ jobs:
       - name: Deploy Strapi Application
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
+            "yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run ", #if running --skip-cloud to skip loginsuff
             cd ~/my-strapi-project
             git fetch origin master
             git reset --hard origin/master 
