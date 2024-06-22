@@ -29,7 +29,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             set -e
-            
+            #name: Update package lists
+             sudo apt update 
             # Update the package list and install Node.js and npm
             sudo apt update
             sudo apt install -y nodejs npm
