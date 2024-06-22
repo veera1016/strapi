@@ -31,15 +31,15 @@ jobs:
             set -e
 
             # Remove existing contents of 'strapi' directory
-            sudo rm -rf strapi/node_modules/*
-            
-            # Clone the repository with force to overwrite existing content
-            git clone https://github.com/veera1016/strapi.git
-            
+            rm -rf strapi/*
+
+            # Clone the repository into 'strapi' directory
+            git clone https://github.com/veera1016/strapi.git strapi
+
             cd strapi
 
             # Install Strapi globally
-            sudo npm install
+            sudo npm install -g strapi
 
             # Create a new Strapi project
             strapi new strapi-project --dbclient=sqlite
@@ -49,7 +49,6 @@ jobs:
 
             # Install dependencies
             npm install
-
             yarn install
 
             # Additional deployment steps
