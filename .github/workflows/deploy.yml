@@ -47,6 +47,12 @@ jobs:
             # Install dependencies
             npm install
 
+            yarn install
+
+            # Additional deployment steps
+            # e.g., building the project, restarting the application
+            yarn build
+
             # Start the Strapi application using pm2
             pm2 start npm --name "strapi" -- start
           EOF
