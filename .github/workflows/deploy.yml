@@ -10,53 +10,65 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Replace with your AWS region
 
-    - name: Upgrade npm
-      run: npm install -g npm@8.19.4
+      - name: Prepare SSH key
+        run: |
+          echo "${{ secrets.ASHOK_EC2_KEY }}" > key.pem
+          chmod 600 key.pem
 
-    - name: Clear npm cache
-      run: npm cache clean --force
+      - name: Deploy Strapi Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ASHOK_EC2_HOST }}
+          username: ${{ secrets.ASHOK_EC2_USER }}
+          key: ${{ secrets.ASHOK_EC2_KEY }}
+          script: |
+            set -e
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.ASHOK_EC2_HOST }}
-        username: ${{ secrets.ASHOK_EC2_USER }}
-        key: ${{ secrets.ASHOK_EC2_KEY }}
-        script: |
-          set -e
+            # Update package lists and upgrade existing packages
+            sudo apt update
+            sudo apt upgrade -y
 
-          # Update the package list and install Node.js and npm
-          sudo apt update
-          sudo apt install -y nodejs npm
+            # Install required dependencies for Node.js and npm
+            sudo apt install -y curl gnupg2 lsb-release
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt install -y nodejs
 
-          # Clone the Strapi repository
-          git clone https://github.com/veera1016/strapi.git
-          cd strapi
+            # Install npm (npm will be installed automatically with Node.js)
+            # Optional: Upgrade npm to the latest version
+            sudo npm install -g npm@latest
 
-          # Install Strapi globally
-          sudo npm install -g strapi
+            # Clean npm cache
+            npm cache clean --force
 
-          # Create a new Strapi project
-          strapi new strapi-project --dbclient=sqlite
+            # Install Strapi globally
+            sudo npm install -g strapi@beta
 
-          # Navigate to the new project directory
-          cd strapi-project
+            # Clone the Strapi repository
+            git clone https://github.com/veera1016/strapi.git
+            cd strapi
 
-          # Install dependencies
-          npm install
-          yarn install  # Use yarn if preferred over npm
+            # Create a new Strapi project
+            strapi new strapi-project --dbclient=sqlite
 
-          # Additional deployment steps (if needed)
-          yarn build  # Example command, adjust as per your project's build process
+            # Navigate to the new project directory
+            cd strapi-project
 
-          # Start the Strapi application using pm2
-          pm2 start npm --name "strapi" -- start
+            # Install dependencies
+            npm install
+            yarn install
 
+            # Build the Strapi application
+            yarn build
+
+            # Start the Strapi application using pm2
+            pm2 start npm --name "strapi" -- start
