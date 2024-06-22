@@ -1,54 +1,54 @@
-name: Deploy Strapi
+name: CI/CD for Strapi
 
 on:
   push:
     branches:
-      - master  # Trigger this workflow on push to the main branch
+      - master
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Check out repository
+      uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.ASHOK_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ASHOK_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Replace with your AWS region
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: Prepare SSH key
-        run: |
-          echo "${{ secrets.ASHOK_EC2_KEY }}" > key.pem
-          chmod 600 key.pem
+    - name: Upgrade npm
+      run: npm install -g npm@latest
 
-      - name: Deploy Strapi Application
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
-            set -e
+    - name: Clear npm cache
+      run: npm cache clean --force
 
-            cd strapi
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.ASHOK_EC2_HOST }}
+        username: ${{ secrets.ASHOK_EC2_USER }}
+        key: ${{ secrets.ASHOK_EC2_KEY }}
+        script: |
+          set -e
 
-            # Install Strapi globally
-            sudo npm install -g strapi
+          # Update the package list and install Node.js and npm
+          sudo apt update
+          sudo apt install -y nodejs npm
 
-            # Create a new Strapi project
-            strapi new strapi-project --dbclient=sqlite
+          # Clone the Strapi repository
+          git clone https://github.com/veera1016/strapi.git
+          cd strapi
 
-            # Navigate to the new project directory
-            cd strapi-project
+          # Install Strapi globally
+          sudo npm install
 
-            # Install dependencies
-            npm install
-            yarn install
+          # Create a new Strapi project
+          strapi new strapi-project --dbclient=sqlite
 
-            # Additional deployment steps
-            # e.g., building the project, restarting the application
-            yarn build
+          # Navigate to the new project directory
+          cd strapi-project
 
-            # Start the Strapi application using pm2
-            pm2 start npm --name "strapi" -- start
-          EOF
+          # Start the Strapi application using pm2
+          pm2 start npm --name "strapi" -- run develop
