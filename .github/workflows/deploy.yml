@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy Strapi Application
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@$ASHOK_EC2_HOST '
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} "
             cd ~/my-strapi-project
             git fetch origin master
             git reset --hard origin/master 
