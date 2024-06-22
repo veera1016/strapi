@@ -31,7 +31,7 @@ jobs:
             set -e
 
             # Remove existing contents of 'strapi' directory
-            rm -rf strapi/*
+            sudo rm -rf strapi/node_modules/*
             
             # Clone the repository with force to overwrite existing content
             git clone https://github.com/veera1016/strapi.git
