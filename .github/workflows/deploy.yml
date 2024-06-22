@@ -29,8 +29,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.ASHOK_EC2_HOST }} << 'EOF'
             set -e
-            #name: Update package lists
-            sudo npm install
             
             # Clone the repository with force to overwrite existing content
             git clone https://github.com/veera1016/strapi.git strapi
