@@ -32,44 +32,12 @@ jobs:
           username: ${{ secrets.ASHOK_EC2_USER }}
           key: ${{ secrets.ASHOK_EC2_KEY }}
           script: |
-            set -e
-
-            # Update package lists and upgrade existing packages
+           set -e
             sudo apt update
-            sudo apt upgrade -y
-
-            # Install Node.js 14.x
-            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-            sudo apt install -y nodejs
-
-            # Verify Node.js and npm versions
-            node --version
-            npm --version
-
-            # Check if the 'strapi' directory exists
-            if [ -d "strapi" ]; then
-              # Directory exists, pull the latest changes
-              cd strapi
-              git pull origin master
-            else
-              # Directory doesn't exist, clone the repository
-              git clone https://github.com/veera1016/strapi.git strapi
-              cd strapi
-            fi
-
-            # Create a new Strapi project with Node.js 14.x
-            npm install -g strapi
-            strapi new strapi-project --dbclient=sqlite --node v14
-
-            # Navigate to the new project directory
-            cd strapi-project
-
-            # Install dependencies
-            npm install
-            yarn install
-
-            # Build the Strapi application
-            yarn build
-
-            # Start the Strapi application using pm2
-            pm2 start npm --name "strapi" -- start
+            sudo apt install -y nodejs npm
+            git clone https://github.com/strapi/strapi.git
+            cd strapi
+            npm install strapi@beta -g
+            strapi new strapi-project --dbclient=sqlite
+            npm run develop
+            
