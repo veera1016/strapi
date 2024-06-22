@@ -49,9 +49,6 @@ resource "aws_instance" "strapi" {
       "sudo npm install -g pm2 ",
       #"sudo npm install -g strapi@latest -y ",
       "yes | npx create-strapi-app@latest my-strapi-project --quickstart --skip-cloud --no-run ", #if running --skip-cloud to skip loginsuff
-      "cd ~/my-strapi-project",
-      "pm2 start npm --name strapi-app -- run develop",
-      "pm2 save"
   ]
 }
 
