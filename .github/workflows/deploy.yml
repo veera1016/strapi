@@ -33,7 +33,7 @@ jobs:
              sudo apt update 
             # Update the package list and install Node.js and npm
             sudo apt update
-            sudo apt install -y nodejs npm
+            sudo npm install strapi@beta -g
 
             # Clone the repository (replace with your repository URL)
             git clone --branch master https://github.com/veera1016/Task1.git
