@@ -37,7 +37,9 @@ jobs:
             sudo apt install -y nodejs npm
             git clone https://github.com/strapi/strapi.git
             cd strapi
-            npm install strapi@beta -g
+            sudo apt update
+            sudo npm install
             strapi new strapi-project --dbclient=sqlite
+            cd strapi-projec
             npm run develop
             
