@@ -33,5 +33,11 @@ jobs:
             git reset --hard origin/master 
             yarn install 
             yarn build 
-            pm2 restart strapi-app 
+            
+            # Start the Strapi app if not running, otherwise restart it
+            if pm2 describe strapi-app > /dev/null; then
+              pm2 restart strapi-app
+            else
+              pm2 start your-strapi-app-file --name strapi-app
+            fi
           EOF
