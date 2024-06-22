@@ -60,18 +60,19 @@ jobs:
               git clone https://github.com/veera1016/strapi.git strapi
               cd strapi
             fi
-            
-            # Install dependencies
-            npm install
-            
+
             # Create a new Strapi project
             strapi new strapi-project --dbclient=sqlite
 
             # Navigate to the new project directory
             cd strapi-project
 
-            # Install dependencies
-            npm install
+            # Install dependencies with sudo
+            sudo npm install --unsafe-perm=true --allow-root
+            sudo yarn install --ignore-engines  # Use --ignore-engines to bypass npm version check
+
+            # Build the Strapi application
+            yarn build
 
             # Start the Strapi application using pm2
             pm2 start npm --name "strapi" -- start
