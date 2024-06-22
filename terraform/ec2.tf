@@ -42,11 +42,15 @@ resource "aws_instance" "strapi" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update -y",
-      "sudo apt-get install -y curl",
+      "sudo apt-get install -y curl git",
       "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
       "sudo apt-get install -y nodejs",
       "sudo npm install -g pm2",
-      "git clone -b revert-1-master https://github.com/veera1016/strapi.git /srv/strapi",
+      "sudo mkdir -p /srv/strapi",
+      "sudo chown ubuntu:ubuntu /srv/strapi",
+      "git clone https://github.com/veera1016/strapi.git /srv/strapi",
+      "ls -la /srv/strapi",  # List the contents of the cloned directory
+      "cd /srv/strapi && ls -la",  # Ensure we are in the correct directory
       "cd /srv/strapi && npm install",
       "cd /srv/strapi && npm run build",
       "pm2 start npm --name strapi -- start"
