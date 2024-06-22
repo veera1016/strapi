@@ -22,7 +22,7 @@ jobs:
 
       - name: Prepare SSH key
         run: |
-          echo "${{ secrets.ASHOK_PRIVATE_KEY }}" > Veera.pem
+          echo "${{ secrets.ASHOK_EC2_KEY }}" > Veera.pem
           chmod 600 key.pem
 
       - name: Deploy Strapi Application
