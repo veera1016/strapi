@@ -1,0 +1,15 @@
+{
+  "name": "strapi-app",
+  "version": "1.0.0",
+  "description": "A Strapi application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'No build step necessary' && exit 0",
+    "test": "echo 'No tests specified' && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}
