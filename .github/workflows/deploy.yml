@@ -31,13 +31,19 @@ jobs:
             # Create the Strapi app if it doesn't exist
           # Create a new Strapi project
           # Install Strapi globally
+          
+          git clone --branch master https://github.com/veera1016/Task1.git
+
+          cd Task1
+
           sudo npm install strapi@beta -g
 
           # Create a new Strapi project
-          strapi new veera-project --dbclient=sqlite
+          
+          strapi new strapi-project --dbclient=sqlite
 
           # Navigate to the new project directory
-          cd veera-project
+          cd strapi-project
 
           # Start the Strapi application using pm2
           pm2 start npm --name "strapi" -- run develop
