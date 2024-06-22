@@ -40,17 +40,21 @@ resource "aws_instance" "strapi" {
   }
 
   provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update -y",
-      "sudo apt-get install -y curl",
-      "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
-      "sudo apt-get install -y nodejs",
-      "sudo npm install -g pm2",
-      "git clone -b revert-1-master https://github.com/veera1016/strapi.git /srv/strapi",
-      "cd /srv/strapi && npm install",
-      "cd /srv/strapi && npm run build",
-      "pm2 start npm --name strapi -- start"
-    ]
+  inline = [
+    "sudo apt-get update -y",
+    "sudo apt-get install -y curl git",
+    "curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
+    "sudo apt-get install -y nodejs",
+    "sudo npm install -g pm2",
+    "sudo mkdir -p /srv/strapi",
+    "sudo chown -R ubuntu:ubuntu /srv/strapi",
+    "git clone -b revert-1-master https://github.com/veera1016/strapi.git /srv/strapi",
+    "cd /srv/strapi && npm install -g npm@10.8.1",
+    "cd /srv/strapi && npm run build",
+    "pm2 start npm --name strapi -- start"
+  ]
+}
+
 
     connection {
       type        = "ssh"
