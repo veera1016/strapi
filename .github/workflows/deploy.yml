@@ -29,14 +29,14 @@ jobs:
       - name: Start SSH agent and add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.ASHOK_EC2_KEY }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.5
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.ASHOK_EC2_HOST }}
+          username: ${{ secrets.ASHOK_EC2_USER }}
+          key: ${{ secrets.ASHOK_EC2_KEY }}
           script: |
             set -e
             exec > >(tee -i /tmp/deploy.log)
