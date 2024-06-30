@@ -28,11 +28,24 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+data "aws_ami" "ubuntu" {
+  most_recent = true
 
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["amazon"] # Canonical
+}
 resource "aws_instance" "strapi" {
-  ami           = "ami-04b70fa74e45c3917"  # Correct AMI ID for ap-south-1
-  instance_type = "t2.medium"              # Changed to t2.medium
-  key_name      = "Veera"                  # Your key pair name
+  ami           = data.aws_ami.ubuntu.id  # Correct AMI ID for ap-south-1
+  instance_type = var.instance_type              # Changed to t2.medium
+  key_name      = var.key_pair                  # Your key pair name
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
 
   tags = {
@@ -41,13 +54,16 @@ resource "aws_instance" "strapi" {
 
   provisioner "remote-exec" {
   inline = [
-      "sudo apt-get update",
-      "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
-      "sudo apt install -y nodejs",
-      "sudo npm install -g yarn",
-      "sudo apt-get install git -y",
+      "sudo apt update -y",
+      "sudo apt install nodejs npm",
+      "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash",
+      "export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"",
+      "source ~/.bashrc",
+      "nvm install 18 ",
       "sudo npm install -g pm2 ",
-      #"sudo npm install -g strapi@latest -y ",
+      "git clone https://github.com/veera1016/strapi.git ",
   ]
 }
 
