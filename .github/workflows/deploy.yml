@@ -46,7 +46,7 @@ jobs:
             cd /home/ubuntu/strapi/strapi-project
 
             echo "Fixing ownership and permissions"
-            sudo chown -R $USER:$USER /home/ubuntu/strapi-manual
+            sudo chown -R $USER:$USER /home/ubuntu/strapi
             sudo chown -R $USER:$USER /home/ubuntu/strapi/strapi-project
 
             echo "Adding exception for safe directory"
