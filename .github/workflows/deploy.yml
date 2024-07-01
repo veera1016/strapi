@@ -47,10 +47,10 @@ jobs:
 
             echo "Fixing ownership and permissions"
             sudo chown -R $USER:$USER /home/ubuntu/strapi-manual
-            sudo chown -R $USER:$USER /home/ubuntu/strapi-manual/strapi-project
+            sudo chown -R $USER:$USER /home/ubuntu/strapi/strapi-project
 
             echo "Adding exception for safe directory"
-            git config --global --add safe.directory /home/ubuntu/strapi-manual
+            git config --global --add safe.directory /home/ubuntu/strapi
 
             echo "Pulling latest code from master branch"
             git pull origin master
