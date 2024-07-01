@@ -53,20 +53,18 @@ resource "aws_instance" "strapi" {
   }
 
   provisioner "remote-exec" {
-  inline = [
+    inline = [
       "sudo apt update -y",
-      "sudo apt install nodejs npm",
+      "sudo apt install -y nodejs npm",
       "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash",
-      "export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion",
+      "export NVM_DIR=\"$HOME/.nvm\"",
+      "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"",
+      "[ -s \"$NVM_DIR/bash_completion\" ] && . \"$NVM_DIR/bash_completion\"",
       "source ~/.bashrc",
-      "nvm install 18 ",
-      "sudo npm install -g pm2 ",
-      "git clone https://github.com/veera1016/strapi.git ",
-  ]
-}
-
+      "nvm install 18",
+      "sudo npm install -g pm2",
+      "git clone https://github.com/veera1016/strapi.git"
+    ]
 
     connection {
       type        = "ssh"
