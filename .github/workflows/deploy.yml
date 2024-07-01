@@ -3,7 +3,7 @@ name: build-and-deploy
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:
@@ -43,7 +43,7 @@ jobs:
             exec 2>&1
 
             echo "Navigating to project directory"
-            cd /home/ubuntu/strapi-manual/strapi-project
+            cd /home/ubuntu/strapi/strapi-project
 
             echo "Fixing ownership and permissions"
             sudo chown -R $USER:$USER /home/ubuntu/strapi-manual
