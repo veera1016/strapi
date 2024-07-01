@@ -1,8 +1,15 @@
+# Variables
 variable "private_key_path" {
   description = "Path to the private key file"
   type        = string
 }
 
+variable "key_pair" {
+  description = "The name of the key pair to use for SSH access"
+  type        = string
+}
+
+# Security Group
 resource "aws_security_group" "strapi_sg" {
   name        = "ashok-security-group"
   description = "Security group for Strapi EC2 instance"
@@ -28,6 +35,8 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+# AMI Data Source
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -40,12 +49,15 @@ data "aws_ami" "ubuntu" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-  owners = ["amazon"] # Canonical
+
+  owners = ["amazon"] # Canonical's AWS account ID
 }
+
+# EC2 Instance
 resource "aws_instance" "strapi" {
-  ami           = data.aws_ami.ubuntu.id  # Correct AMI ID for ap-south-1
-  instance_type = var.instance_type              # Changed to t2.medium
-  key_name      = var.key_pair                  # Your key pair name
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.key_pair
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
 
   tags = {
@@ -73,8 +85,9 @@ resource "aws_instance" "strapi" {
       host        = self.public_ip
     }
   }
+}
 
-
+# Output
 output "instance_ip" {
   value = aws_instance.strapi.public_ip
 }
