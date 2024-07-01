@@ -4,11 +4,6 @@ variable "private_key_path" {
   type        = string
 }
 
-variable "key_pair" {
-  description = "The name of the key pair to use for SSH access"
-  type        = string
-}
-
 # Security Group
 resource "aws_security_group" "strapi_sg" {
   name        = "ashok-security-group"
